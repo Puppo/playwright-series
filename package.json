@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "e2e": "playwright test",
+    "e2e:report": "playwright show-report"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -15,6 +17,7 @@
     "zustand": "^4.1.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.28.1",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
