@@ -37,4 +37,18 @@ test.describe("Users behaviours", () => {
 
     await expect(playerParagraph).toContainText("O");
   });
+
+  test('should win the player "X"', async ({ page }) => {
+    await page.goto("/");
+    await page.locator("button:nth-child(1)").click();
+    await page.locator("button:nth-child(5)").click();
+    await page.locator("button:nth-child(6)").click();
+    await page.locator("button:nth-child(7)").click();
+    await page.locator("button:nth-child(3)").click();
+    await page.locator("button:nth-child(9)").click();
+    await page.locator("button:nth-child(2)").click();
+
+    const winnerParagraph = await page.getByText(/winner/i);
+    await expect(winnerParagraph).toContainText("X");
+  });
 });
