@@ -1,10 +1,20 @@
-import { expect, test } from "@playwright/test";
+import { expect, test as base } from "@playwright/test";
+
+type TestFixtures = {
+  playerXWinMoves: [number, number, number, number, number, number, number];
+};
+
+const test = base.extend<TestFixtures>({
+  playerXWinMoves: async ({}, use) => {
+    await use([1, 5, 6, 7, 3, 9, 2]);
+  },
+  page: async ({ baseURL, page }, use) => {
+    baseURL && (await page.goto(baseURL));
+    await use(page);
+  },
+});
 
 test.describe("On View", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-  });
-
   test("show tic tac toe page", async ({ page }) => {
     await expect(page).toHaveTitle("Tic Tac Toe");
   });
@@ -17,10 +27,6 @@ test.describe("On View", () => {
 });
 
 test.describe("Users behaviours", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-  });
-
   test('the first player select the top-left square and then the next player is the "O"', async ({
     page,
   }) => {
@@ -38,15 +44,10 @@ test.describe("Users behaviours", () => {
     await expect(playerParagraph).toContainText("O");
   });
 
-  test('should win the player "X"', async ({ page }) => {
-    await page.goto("/");
-    await page.locator("button:nth-child(1)").click();
-    await page.locator("button:nth-child(5)").click();
-    await page.locator("button:nth-child(6)").click();
-    await page.locator("button:nth-child(7)").click();
-    await page.locator("button:nth-child(3)").click();
-    await page.locator("button:nth-child(9)").click();
-    await page.locator("button:nth-child(2)").click();
+  test('should win the player "X"', async ({ page, playerXWinMoves }) => {
+    for (const move of playerXWinMoves) {
+      await page.locator(`button:nth-child(${move})`).click();
+    }
 
     const winnerParagraph = await page.getByText(/winner/i);
     await expect(winnerParagraph).toContainText("X");
