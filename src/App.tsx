@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Confetti from 'react-dom-confetti';
 import styles from './App.module.scss';
 import Board from './components/Board/Board';
@@ -27,6 +28,24 @@ function App() {
     winner,
     restart
   } = useTicTacToeStore();
+
+  useEffect(() => {
+    const unsub = useTicTacToeStore.subscribe((state) => state.winner, async (winner) => {
+      if (!winner) return;
+      const res = await fetch('http://localhost:3001/api/winners', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ winner, createdAt: new Date() })
+      });
+      if (!res.ok) {
+        console.error('Error saving winner');
+      }
+    })
+
+    return unsub;
+  })
 
   return (
     <div className={styles.App}>

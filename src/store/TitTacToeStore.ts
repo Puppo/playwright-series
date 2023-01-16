@@ -1,4 +1,5 @@
 import create from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
 import { TicTacToeGrid, TicTacToeGridIndex } from "../models/TicTacToeGrid";
 import { TicTacToeValue } from "../models/TicTacToeValue";
 import { Nullable } from "../utils/Nullable";
@@ -31,29 +32,32 @@ function calculateWinner(board: TicTacToeGrid): TicTacToeValue | null {
   return null;
 }
 
-export const useTicTacToeStore = create<TicTacToeState>(set => ({
-  board: [null, null, null, null, null, null, null, null, null],
-  nextPlayer: "X",
-  winner: null,
-  move(position: TicTacToeGridIndex) {
-    set(state => {
-      if (state.winner) return state;
-      if (state.board[position]) return state;
+export const useTicTacToeStore = create<TicTacToeState>()(
+  subscribeWithSelector(set => ({
+    board: [null, null, null, null, null, null, null, null, null],
+    nextPlayer: "X",
+    winner: null,
+    move(position: TicTacToeGridIndex) {
+      set(state => {
+        if (state.winner) return state;
+        if (state.board[position]) return state;
 
-      const board = [...state.board] as TicTacToeGrid;
-      board[position] = state.nextPlayer;
-      return {
-        board,
-        nextPlayer: state.nextPlayer === "X" ? "O" : "X",
-        winner: calculateWinner(board),
-      };
-    });
-  },
-  restart() {
-    set({
-      board: [null, null, null, null, null, null, null, null, null],
-      nextPlayer: "X",
-      winner: null,
-    });
-  },
-}));
+        const board = [...state.board] as TicTacToeGrid;
+        board[position] = state.nextPlayer;
+        const winner = calculateWinner(board);
+        return {
+          board,
+          nextPlayer: state.nextPlayer === "X" ? "O" : "X",
+          winner,
+        };
+      });
+    },
+    restart() {
+      set({
+        board: [null, null, null, null, null, null, null, null, null],
+        nextPlayer: "X",
+        winner: null,
+      });
+    },
+  }))
+);

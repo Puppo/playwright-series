@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "e2e": "playwright test",
     "e2e:report": "playwright show-report",
-    "test-ct": "playwright test -c playwright-ct.config.ts"
+    "test-ct": "playwright test -c playwright-ct.config.ts",
+    "api": "json-server --watch db/db.json --port 3001 --routes db/routes.json"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -23,6 +24,7 @@
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
+    "json-server": "^0.17.1",
     "sass": "^1.56.1",
     "typescript": "^4.6.4",
     "vite": "^3.2.3"
