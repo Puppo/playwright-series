@@ -52,4 +52,33 @@ test.describe("Users behaviours", () => {
     const winnerParagraph = await page.getByText(/winner/i);
     await expect(winnerParagraph).toContainText("X");
   });
+
+  test("should register the winner calling the winner API[POST]", async ({
+    page,
+    playerXWinMoves,
+  }) => {
+    page.route("http://localhost:3001/api/winners", async route => {
+      const request = route.request();
+      const method = await request.method();
+      const postData = await request.postDataJSON();
+
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(Object.assign({ id: 1 }, postData)),
+      });
+
+      expect(method).toBe("POST");
+      expect(postData).toEqual(
+        expect.objectContaining({
+          winner: expect.stringMatching("X"),
+          createdAt: expect.any(String),
+        })
+      );
+    });
+
+    for (const move of playerXWinMoves) {
+      await page.locator(`button:nth-child(${move})`).click();
+    }
+  });
 });
