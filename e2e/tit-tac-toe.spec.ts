@@ -1,18 +1,4 @@
-import { expect, test as base } from "@playwright/test";
-
-type TestFixtures = {
-  playerXWinMoves: [number, number, number, number, number, number, number];
-};
-
-const test = base.extend<TestFixtures>({
-  playerXWinMoves: async ({}, use) => {
-    await use([1, 5, 6, 7, 3, 9, 2]);
-  },
-  page: async ({ baseURL, page }, use) => {
-    baseURL && (await page.goto(baseURL));
-    await use(page);
-  },
-});
+import { expect, test } from "../e2e-utils/test-base.ts";
 
 test.describe("On View", () => {
   test("show tic tac toe page", async ({ page }) => {
@@ -47,6 +33,29 @@ test.describe("Users behaviours", () => {
   test('should win the player "X"', async ({ page, playerXWinMoves }) => {
     for (const move of playerXWinMoves) {
       await page.locator(`button:nth-child(${move})`).click();
+    }
+
+    const winnerParagraph = await page.getByText(/winner/i);
+    await expect(winnerParagraph).toContainText("X");
+  });
+
+  test('should win the player "X" with the "runXWinGame" fixture', async ({
+    page,
+    runXWinGame,
+  }) => {
+    await runXWinGame();
+
+    const winnerParagraph = await page.getByText(/winner/i);
+    await expect(winnerParagraph).toContainText("X");
+  });
+
+  test('should win the player "X" using "playerXWinMoves" and "move" fixture', async ({
+    page,
+    playerXWinMoves,
+    movePlayer,
+  }) => {
+    for (const move of playerXWinMoves) {
+      await movePlayer(move);
     }
 
     const winnerParagraph = await page.getByText(/winner/i);
