@@ -25,6 +25,7 @@
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
     "json-server": "^0.17.1",
+    "json-server-auth": "^2.1.0",
     "sass": "^1.56.1",
     "typescript": "^4.6.4",
     "vite": "^3.2.3"
