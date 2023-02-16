@@ -13,6 +13,7 @@
     "api": "json-server --watch db/db.json --port 3001 --routes db/routes.json"
   },
   "dependencies": {
+    "csv-parse": "^5.3.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dom-confetti": "^0.2.0",
