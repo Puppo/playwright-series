@@ -1,6 +1,20 @@
 import { expect, test } from '@playwright/experimental-ct-react';
 import Square from './Square';
 
+test.beforeEach(({ }, testInfo) => {
+  const originalSnapshotPath = testInfo.snapshotPath;
+
+  testInfo.snapshotPath = (snapshotName) => {
+    const result = originalSnapshotPath
+      .apply(testInfo, [snapshotName])
+      .replace(".txt", ".json")
+      .replace("-linux", "")
+      .replace("-darwin", "");
+
+    return result;
+  };
+});
+
 test.describe('Square', () => {
 
   test('should show the X icon without regression', async ({ mount, page }) => {
